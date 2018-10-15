@@ -13,19 +13,32 @@ PATH = 'C:\\temp'
 class Handler(FileSystemEventHandler):
 
     def on_created(self, event):
-        new_event = Event(event.event_type, event.is_directory, event.src_path, None)
-        session.add(new_event)
-        print("событие: {}, папка: {}, путь: {}".format(event.event_type, event.is_directory, event.src_path))
+        new_event = Event(event.event_type, event.is_directory, event.src_path, dst_path='')
+        try:
+            session.add(new_event)
+            session.commit()
+        except Exception as err:
+            print(err)
+        print(new_event)
 
     def on_deleted(self, event):
-        new_event = Event(event.event_type, event.is_directory, event.src_path, None)
-        session.add(new_event)
-        print("событие: {}, папка: {}, путь: {}".format(event.event_type, event.is_directory, event.src_path))
+        new_event = Event(
+            event.event_type, event.is_directory, event.src_path, dst_path='')
+        try:
+            session.add(new_event)
+            session.commit()
+        except Exception as err:
+            print(err)
+        print(new_event)
 
     def on_moved(self, event):
         new_event = Event(event.event_type, event.is_directory, event.src_path, event.dest_path)
-        session.add(new_event)
-        print("событие: {}, папка: {}, путь_ист: {}, путь_назн: {}, ".format(event.event_type, event.is_directory, event.src_path, event.dest_path))
+        try:
+            session.add(new_event)
+            session.commit()
+        except Exception as err:
+            print(err)
+        print(new_event)
 
 
 if __name__ == "__main__":

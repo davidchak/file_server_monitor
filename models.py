@@ -17,19 +17,19 @@ class Event(Base):
     is_directory = Column(Boolean)
     src_path = Column(String(200))
     dst_path = Column(String(200))
-    time = Column(String(10))
+    time = Column(String)
 
     def __init__(self, event, is_directory, src_path, dst_path):
         self.event = event
         self.is_directory = is_directory
         self.src_path = src_path
-        self.dst_apth = dst_path
+        self.dst_path = dst_path
         self.time = self.get_time()
 
     def __repr__(self):
         return "<Event(event: {}, time: {}, is_directory: {} src: {}, dst: {})>".format(
             self.event, self.time, self.is_directory, self.src_path,
-            self.dst_apth
+            self.dst_path
         )
 
     @staticmethod
