@@ -1,42 +1,30 @@
-# coding: utf8
-
-import sys
+﻿import sys
 import time
 import sqlite3
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+from models import Event, session
 
 
-
-# CONST
-PATH = "C:\\Temp"
+PATH = 'C:\\temp'
 
 
 # TODO: Описать действия при добавлениии/изменении файлов и папок
 class Handler(FileSystemEventHandler):
-    def __init__(self):
-        self.db = 'test.db'
-
-    def sqlite3_con(self, event, isdir, src, dest='None'):
-        con = sqlite3.connect(self.db)
-        cur = con.cursor()
-        cur.execute("INSERT INTO events(event, isdir, src, dest) VALUES ('{}','{}','{}','{}')".format(event, isdir, src, dest))
-        con.commit()
-        con.close()
 
     def on_created(self, event):
-        self.sqlite3_con(event.event_type, event.is_directory, event.src_path)
+        new_event = Event(event.event_type, event.is_directory, event.src_path, None)
+        session.add(new_event)
         print("событие: {}, папка: {}, путь: {}".format(event.event_type, event.is_directory, event.src_path))
 
     def on_deleted(self, event):
-        self.sqlite3_con(event.event_type, event.is_directory, event.src_path)
+        new_event = Event(event.event_type, event.is_directory, event.src_path, None)
+        session.add(new_event)
         print("событие: {}, папка: {}, путь: {}".format(event.event_type, event.is_directory, event.src_path))
 
-    # def on_modified(self, event):
-    #     print(event)
-
     def on_moved(self, event):
-        self.sqlite3_con(event.event_type, event.is_directory, event.src_path, event.dest_path)
+        new_event = Event(event.event_type, event.is_directory, event.src_path, event.dest_path)
+        session.add(new_event)
         print("событие: {}, папка: {}, путь_ист: {}, путь_назн: {}, ".format(event.event_type, event.is_directory, event.src_path, event.dest_path))
 
 
