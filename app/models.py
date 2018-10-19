@@ -36,3 +36,35 @@ class Event(db.Model):
     def get_time():
         time = datetime.now()
         return "{}:{}:{}".format(time.hour, time.minute, time.second)
+
+
+class File(db.Model):
+
+    def __init__(self, filename, folder):
+        self.filename = filename
+        self.folder = folder
+
+    id = db.Column(db.Integer, primary_key=True)
+    filename = db.Column(db.String(64), index=True)
+    created = db.Column(db.String(10))
+    modified = db.Column(db.String(10))
+    autor_id = db.Column(db.Integer, db.ForeignKey('autor.id'))
+    folder_id = db.Column(db.Integer, db.ForeignKey('folder.id'))
+
+
+class Folder(db.Model):
+
+    def __init__(self, foldername):
+        self.foldername = foldername
+
+    id = db.Column(db.Integer, primary_key=True)
+    foldername = db.Column(db.String(256), index=True, unique=True)
+    files = db.relationship('File', backref='folder', lazy='dynamic')
+    scan_date = db.Column(db.String(20))
+
+
+class Autor(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    autorname = db.Column(db.String(120), index=True, unique=True)
+    files = db.relationship('File', backref='autor', lazy='dynamic')
